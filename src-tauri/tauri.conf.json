@@ -27,7 +27,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "wakubuk.ajnart.fr",
       "targets": "all"
     },
     "security": {
