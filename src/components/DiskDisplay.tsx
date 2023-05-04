@@ -1,64 +1,97 @@
-import { createStyles, ThemeIcon, Progress, Text, Group, Badge, Paper, rem, Card, Flex } from '@mantine/core';
-import { IconSwimming } from '@tabler/icons-react';
-
-const ICON_SIZE = rem(60);
+import { createStyles, Text, Card, RingProgress, Group, rem, Switch, Badge, Code, Title, Stack } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   card: {
-    position: 'relative',
-    overflow: 'visible',
-    padding: theme.spacing.xl,
-    paddingTop: `calc(${theme.spacing.xl} * 1.5 + ${ICON_SIZE} / 3)`,
-    '&:hover': {
-      // Cool hover effect, makes the button 10% larger in 0.3s
-			transform: 'scale(1.02)',
-			transition: 'transform 0.1s ease-in-out',
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    cursor: 'pointer',
+    ':hover': {
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     },
   },
 
-  icon: {
-    position: 'absolute',
-    top: `calc(-${ICON_SIZE} / 3)`,
-    left: `calc(50% - ${ICON_SIZE} / 2)`,
+  label: {
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontWeight: 700,
+    lineHeight: 1,
   },
 
-  title: {
+  lead: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontWeight: 700,
+    fontSize: rem(22),
     lineHeight: 1,
+  },
+
+  inner: {
+    display: 'flex',
+
+    [theme.fn.smallerThan('xs')]: {
+      flexDirection: 'column',
+    },
+  },
+
+  ring: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'flex-end',
+
+    [theme.fn.smallerThan('xs')]: {
+      justifyContent: 'center',
+      marginTop: theme.spacing.md,
+    },
   },
 }));
 
 export function DiskDiplay({ disk }: { disk: Disk }) {
-  const { classes } = useStyles();
-
   const used = ((disk.totalSpace - disk.availableSpace) / disk.totalSpace) * 100;
 
+  const { classes, theme } = useStyles();
   return (
-    <Card radius="md" withBorder className={classes.card}>
-      <ThemeIcon className={classes.icon} size={ICON_SIZE} radius={ICON_SIZE}>
-        <IconSwimming size="2rem" stroke={1.5} />
-      </ThemeIcon>
-      <Text ta="center" fw={700} className={classes.title}>
-        {disk.name}
-      </Text>
-      <Text c="dimmed" ta="center" fz="sm">
-        {disk.mountPoint}
-      </Text>
+    <Card withBorder shadow="md" p="xl" radius="md" className={classes.card}>
+      <div className={classes.inner}>
+        <Stack spacing={'lg'}>
+          <Group spacing="xs">
+            <Title order={2}>{disk.name}</Title>
+            <Code>{disk.mountPoint}</Code>
+            <Badge ml={5} color={disk.isRemovable ? 'red' : 'blue'} variant="light">
+              {disk.isRemovable ? 'External' : 'Internal'}
+            </Badge>
+          </Group>
+          <Stack spacing="xs">
+            <Group spacing="sm" key={disk.name}>
+              <Text className={classes.label}>Available space:</Text>
+              <Text size="md" color="dimmed">
+                {(disk.availableSpace / 1e9).toFixed(0)} GB
+              </Text>
+            </Group>
+            <Group spacing="sm" key={disk.name}>
+              <Text className={classes.label}>Total space:</Text>
+              <Text size="md" color="dimmed">
+                {(disk.totalSpace / 1e9).toFixed(0)} GB
+              </Text>
+            </Group>
+          </Stack>
+        </Stack>
 
-      <Group mt="xs">
-        <Badge size="md">{(disk.availableSpace / 1e9).toFixed(1)} GB Free</Badge>
-        <Badge size="md">{(disk.totalSpace / 1e9).toFixed(1)} GB used</Badge>
-        <Badge size="md" variant="dot">
-          {used.toFixed(0)}%
-        </Badge>
-      </Group>
-
-      <Progress value={used} mt={5} />
-
-      <Group position="apart" mt="md">
-        <Text fz="sm">20 / 36 km</Text>
-        <Badge size="sm">4 days left</Badge>
-      </Group>
+        <div className={classes.ring}>
+          <RingProgress
+            roundCaps
+            thickness={6}
+            size={150}
+            sections={[{ value: used, color: theme.primaryColor }]}
+            label={
+              <div>
+                <Text ta="center" fz="lg" className={classes.label}>
+                  {used.toFixed(0)}%
+                </Text>
+                <Text ta="center" fz="xs" c="dimmed">
+                  Completed
+                </Text>
+              </div>
+            }
+          />
+        </div>
+      </div>
     </Card>
   );
 }
