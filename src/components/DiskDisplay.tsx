@@ -1,4 +1,18 @@
-import { createStyles, Text, Card, RingProgress, Group, rem, Switch, Badge, Code, Title, Stack } from '@mantine/core';
+import {
+  createStyles,
+  Text,
+  Card,
+  RingProgress,
+  Group,
+  rem,
+  Badge,
+  Code,
+  Title,
+  Stack,
+  Avatar,
+} from '@mantine/core';
+import { IconDatabase, IconServer } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -43,14 +57,39 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function DiskDiplay({ disk }: { disk: Disk }) {
+  const navigate = useNavigate();
+
+  function NavigateToDisk(disk: Disk) {
+    navigate('/analyze', {
+      state: {
+        name: disk.name,
+        path: disk.mountPoint,
+        used: disk.totalSpace - disk.availableSpace,
+        isFullscan: false,
+        isDirectory: false,
+      },
+    });
+    console.log(disk);
+  }
+
   const used = ((disk.totalSpace - disk.availableSpace) / disk.totalSpace) * 100;
 
   const { classes, theme } = useStyles();
   return (
-    <Card withBorder shadow="md" p="xl" radius="md" className={classes.card}>
+    <Card
+      withBorder
+      shadow="md"
+      p="xl"
+      radius="md"
+      className={classes.card}
+      onClick={() => NavigateToDisk(disk)}
+    >
       <div className={classes.inner}>
         <Stack spacing={'lg'}>
           <Group spacing="xs">
+            <Avatar size={'md'} color={disk.isRemovable ? 'red' : 'blue'} variant="light" radius={'xl'}>
+              {disk.isRemovable ? <IconDatabase size={24} /> : <IconServer size={24} />}
+            </Avatar>
             <Title order={2}>{disk.name}</Title>
             <Code>{disk.mountPoint}</Code>
             <Badge ml={5} color={disk.isRemovable ? 'red' : 'blue'} variant="light">
