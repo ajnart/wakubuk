@@ -1,8 +1,9 @@
-import { ColorScheme, ColorSchemeProvider, MantineProvider, Text } from '@mantine/core';
-import Index from './pages';
-import { useColorScheme, useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { useColorScheme, useHotkeys } from '@mantine/hooks';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import IndexPage from './pages/IndexPage';
+import DiskPage from './pages/AnalyzePage';
 
 export default function App() {
   const preferredColorScheme = useColorScheme('dark');
@@ -13,6 +14,7 @@ export default function App() {
   useEffect(() => {
     setColorScheme(preferredColorScheme);
   }, [preferredColorScheme]);
+
   useHotkeys([['mod+J', () => toggleColorScheme()]]);
 
   return (
@@ -20,7 +22,8 @@ export default function App() {
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<IndexPage />} />
+            <Route path="/analyze" element={<DiskPage />} />
           </Routes>
         </MantineProvider>
       </ColorSchemeProvider>
