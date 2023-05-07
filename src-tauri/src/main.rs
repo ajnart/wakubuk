@@ -1,14 +1,16 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::process::Command;
+use std::{process::Command, sync::Mutex};
 
 use serde::Serialize;
 use sysinfo::{DiskExt, System, SystemExt};
+use tauri::api::{process::CommandChild, shell::Program};
+mod files;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct Disk<'a> {
-    name: &'a str,
+struct Disk {
+    name: String,
     mount_point: String,
     total_space: u64,
     available_space: u64,
@@ -27,10 +29,10 @@ fn get_disks() -> String {
     let mut s = System::new_all();
     s.refresh_all();
 
-    let mut vec: Vec<Disk> = Vec::new();
+    let mut vec = Vec::<Disk>::new();
     for disk in s.disks() {
         vec.push(Disk {
-            name: disk.name().to_str().unwrap(),
+            name: disk.name().to_str().unwrap().to_string(),
             available_space: disk.available_space(),
             total_space: disk.total_space(),
             mount_point: disk.mount_point().to_str().unwrap().to_string(),
@@ -72,9 +74,38 @@ fn open_folder(path: String) {
     }
 }
 
+pub struct ProgramState(Mutex<Option<CommandChild>>);
+
+#[tauri::command]
+fn start_scanning(
+    app_handle: tauri::AppHandle,
+    state: tauri::State<'_, ProgramState>,
+    path: String,
+    ratio: String,
+) -> Result<(), ()> {
+    files::start(app_handle, state, path, ratio)
+}
+
+#[tauri::command]
+fn stop_scanning(
+    _app_handle: tauri::AppHandle,
+    state: tauri::State<'_, ProgramState>,
+    _path: String,
+) -> Result<(), ()> {
+    files::stop(state);
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, get_disks, open_folder])
+        .manage(ProgramState(Default::default()))
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            get_disks,
+            open_folder,
+            start_scanning,
+            stop_scanning
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
