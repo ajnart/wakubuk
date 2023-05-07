@@ -54,7 +54,7 @@ fn open_folder(path: String) {
     #[cfg(target_os = "windows")]
     {
         let re = Regex::new(r"/").unwrap();
-        let result = re.replace_all(&path);
+        let result = re.replace_all(&path, "\\");
         Command::new("explorer")
             .args(["/select,", format!("{}", result).as_str()])
             .spawn()
