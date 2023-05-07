@@ -61,7 +61,7 @@ export function FolderDisplay() {
             name: (directory as string).replace(/^.*[\\\/]/, ''),
 						path: (directory as string).replace(/\\/g, '/'),
             used: 0,
-            fullscan: false,
+            isFullscan: true,
             isDirectory: true,
           },
         });
