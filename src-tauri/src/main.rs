@@ -8,7 +8,7 @@ use tauri::api::process::CommandChild;
 mod files;
 
 #[cfg(target_os = "linux")]
-use std::path::PathBuf;
+use {std::fs::metadata, std::path::PathBuf};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
