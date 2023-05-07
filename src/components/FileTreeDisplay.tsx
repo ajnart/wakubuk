@@ -1,14 +1,25 @@
-import { Stack, Title, NavLink, Text } from '@mantine/core';
+import { Stack, Title, NavLink, Text, ScrollArea, Group, Badge } from '@mantine/core';
 import { IconFolder, IconFile } from '@tabler/icons-react';
-import { parseDataStructure } from '../tools/parsing';
+import { formatBytes, parseDataStructure } from '../tools/parsing';
 import { TreeNode } from '../types';
 
 export function FileTreeDisplay({ status, name }: { status: any; name: string }) {
   const data = parseDataStructure(status);
-  console.log({ data });
+  console.log(status);
   const renderTreeNodes = (nodes: TreeNode[]): React.ReactNode => {
     return nodes.map((node) => (
-      <NavLink icon={node.children.length > 0 ? <IconFolder /> : <IconFile />} key={node.name} label={node.name}>
+      <NavLink
+        icon={node.children.length > 0 ? <IconFolder /> : <IconFile />}
+        key={node.name}
+        label={
+          <Group position="apart">
+            <Text>{node.name}</Text>
+            <Badge color="blue" variant="light" size="sm" pl={10}>
+              {formatBytes(node.data)}
+            </Badge>
+          </Group>
+        }
+      >
         {node.children.length > 0 && renderTreeNodes(node.children)}
       </NavLink>
     ));
@@ -17,7 +28,13 @@ export function FileTreeDisplay({ status, name }: { status: any; name: string })
   return (
     <Stack style={{ height: '90vh' }}>
       <Title>Disk: {name}</Title>
-      {renderTreeNodes(data.tree.children)}
+      <ScrollArea
+        style={{
+          height: '100vh',
+        }}
+      >
+        {renderTreeNodes(data.tree.children)}
+      </ScrollArea>
     </Stack>
   );
 }
