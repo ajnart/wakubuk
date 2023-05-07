@@ -7,6 +7,9 @@ use sysinfo::{DiskExt, System, SystemExt};
 use tauri::api::process::CommandChild;
 mod files;
 
+#[cfg(target_os = "linux")]
+use std::path::PathBuf;
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Disk {
