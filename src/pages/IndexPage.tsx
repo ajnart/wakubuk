@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect, useState } from 'react';
 import { DiskDiplay } from '../components/DiskDisplay';
 import { FolderDisplay } from '../components/FolderDisplay';
+import { Disk } from '../types';
 
 const useStyles = createStyles((theme) => ({
   title: {

@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import { IconDatabase, IconServer } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { Disk } from '../types';
 
 const useStyles = createStyles((theme) => ({
   card: {

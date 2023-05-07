@@ -1,4 +1,4 @@
-interface Disk {
+export interface Disk {
   name: string;
   mountPoint: String;
   totalSpace: number;
@@ -6,7 +6,7 @@ interface Disk {
   isRemovable: boolean;
 }
 
-interface DiskRouteParams {
+export interface DiskRouteParams {
   name: string;
   path: string;
   used: number;
@@ -14,13 +14,13 @@ interface DiskRouteParams {
   isDirectory: boolean;
 }
 
-type TreeNode = {
+export type TreeNode = {
   name: string;
   data: number;
   children: TreeNode[];
 };
 
-type DataStructure = {
+export type DataStructure = {
   'schema-version': string;
   pdu: string;
   unit: string;

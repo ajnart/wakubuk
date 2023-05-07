@@ -7,6 +7,7 @@ import { useHotkeys } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { FileTreeDisplay } from '../components/FileTreeDisplay';
+import { DiskRouteParams } from '../types';
 
 const useStyles = createStyles((theme) => ({
   card: {
