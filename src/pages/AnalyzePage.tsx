@@ -1,11 +1,12 @@
-import { Button, Card, Center, Progress, Stack, Text, Title, createStyles } from '@mantine/core';
+import { Button, Card, Progress, Stack, Text, Title, createStyles } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/tauri';
-import { emit, listen } from '@tauri-apps/api/event';
-import { useEffect, useRef, useState } from 'react';
+import { listen } from '@tauri-apps/api/event';
+import { useEffect, useState } from 'react';
 import { useHotkeys } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
+import { FileTreeDisplay } from '../components/FileTreeDisplay';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -36,11 +37,12 @@ export default function DiskPage() {
   const { classes } = useStyles();
   const cappedTotal = Math.min(status ? status.total : 0, used);
   const percentage = (cappedTotal / used) * 100 || 0;
-  const baseData = useRef<Disk | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  console.log({ name, path, used, isFullscan });
 
   useEffect(() => {
-    invoke('start_scanning', { path, full: isFullscan, ratio: isFullscan ? '0' : '0.001' });
+    invoke('start_scanning', { path, full: isFullscan, ratio: isFullscan ? '0.000001' : '0.001' });
     const scanStatusListner = listen('scan_status', (event: any) => {
       // event.event is the event name (useful if you want to use a single callback fn for multiple event types)
       // event.payload is the payload object
@@ -56,6 +58,7 @@ export default function DiskPage() {
       });
       setStatus(event.payload);
       console.log('got a scan_completed event:', event.payload);
+      setIsLoading(false);
     });
     return () => {
       scanStatusListner.then((f) => f());
@@ -63,29 +66,36 @@ export default function DiskPage() {
       invoke('stop_scanning', { path });
     };
   }, []);
+  if (isLoading) {
+    return (
+      <Stack style={{ height: '90vh' }}>
+        <Title>Disk: {name}</Title>
+        <Card withBorder radius="md" p="xl" className={classes.card}>
+          <Text fz="xs" tt="uppercase" fw={700} className={classes.title}>
+            Analyzing {name}
+          </Text>
+          <Text fz="lg" fw={500} className={classes.stats}>
+            {percentage} / 100
+          </Text>
+          <Progress
+            value={54.31}
+            mt="md"
+            size="lg"
+            radius="xl"
+            classNames={{
+              root: classes.progressTrack,
+              bar: classes.progressBar,
+            }}
+          />
+          <Button onClick={() => navigate('/')}>Stop scanning</Button>
+        </Card>
+      </Stack>
+    );
+  }
 
   return (
-    <Stack style={{ height: '90vh' }}>
-      <Title>Disk: {name}</Title>
-      <Card withBorder radius="md" p="xl" className={classes.card}>
-        <Text fz="xs" tt="uppercase" fw={700} className={classes.title}>
-          Analyzing {name}
-        </Text>
-        <Text fz="lg" fw={500} className={classes.stats}>
-          {percentage} / 100
-        </Text>
-        <Progress
-          value={54.31}
-          mt="md"
-          size="lg"
-          radius="xl"
-          classNames={{
-            root: classes.progressTrack,
-            bar: classes.progressBar,
-          }}
-        />
-        <Button onClick={() => navigate('/')}>Stop scanning</Button>
-      </Card>
+    <Stack>
+      <FileTreeDisplay status={status} name={name} />
     </Stack>
-  );
+  )
 }
