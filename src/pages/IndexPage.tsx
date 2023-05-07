@@ -2,6 +2,7 @@ import { Text, Stack, List, Loader, Center, createStyles, Title, rem, Container 
 import { invoke } from '@tauri-apps/api/tauri';
 import { useEffect, useState } from 'react';
 import { DiskDiplay } from '../components/DiskDisplay';
+import { FolderDisplay } from '../components/FolderDisplay';
 
 const useStyles = createStyles((theme) => ({
   title: {
@@ -10,7 +11,6 @@ const useStyles = createStyles((theme) => ({
     letterSpacing: rem(-1),
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
-    color: theme.white,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     textAlign: 'left',
 
@@ -25,7 +25,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   description: {
-    color: theme.colors.gray[0],
     textAlign: 'left',
 
     [theme.fn.smallerThan('xs')]: {
@@ -79,6 +78,7 @@ export default function IndexPage() {
         {disks.map((disk) => (
           <DiskDiplay key={disk.name} disk={disk} />
         ))}
+        <FolderDisplay />
       </Stack>
     </>
   );
