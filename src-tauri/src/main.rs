@@ -7,6 +7,9 @@ use sysinfo::{DiskExt, System, SystemExt};
 use tauri::api::process::CommandChild;
 mod files;
 
+#[cfg(target_os = "windows")]
+use tauri::regex::Regex;
+
 #[cfg(target_os = "linux")]
 use {std::fs::metadata, std::path::PathBuf};
 
