@@ -4,7 +4,7 @@ use std::{process::Command, sync::Mutex};
 
 use serde::Serialize;
 use sysinfo::{DiskExt, System, SystemExt};
-use tauri::api::{process::CommandChild, shell::Program};
+use tauri::api::process::CommandChild;
 mod files;
 
 #[derive(Serialize)]
