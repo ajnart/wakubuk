@@ -1,6 +1,6 @@
 [package]
 name = "wakubuk"
-version = "0.0.2"
+version = "0.0.3"
 description = "Tarui app to analyze your files"
 authors = ["ajnart"]
 license = "MIT"
