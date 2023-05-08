@@ -3,7 +3,7 @@
 To install the app, simply download the latest version from the releases tab and install / run it.
 
 ## Stack
-#### Tauri + React + Typescript
+#### Tauri + React + Typescript + Mantine
 
 This template should help get you started developing with Tauri, React, Mantine and Typescript in Vite.
 
