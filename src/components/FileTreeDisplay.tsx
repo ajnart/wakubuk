@@ -25,15 +25,12 @@ export function FileTreeDisplay({ status, name }: { status: any; name: string })
   };
 
   return (
-    <Stack style={{ height: '90vh' }}>
-      <Title>Disk: {name}</Title>
-      <ScrollArea
-        style={{
-          height: '100vh',
-        }}
-      >
-        {renderTreeNodes(data.tree.children)}
-      </ScrollArea>
-    </Stack>
+    <ScrollArea
+      style={{
+        height: '80vh',
+      }}
+    >
+      {renderTreeNodes(data.tree.children)}
+    </ScrollArea>
   );
 }

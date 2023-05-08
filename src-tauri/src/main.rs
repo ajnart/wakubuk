@@ -50,13 +50,16 @@ fn get_disks() -> String {
 }
 
 #[tauri::command]
-fn open_folder(path: String) {
+fn open_folder(path: String, inside: bool) {
     #[cfg(target_os = "windows")]
     {
         let re = Regex::new(r"/").unwrap();
         let result = re.replace_all(&path, "\\");
         Command::new("explorer")
-            .args(["/select,", format!("{}", result).as_str()])
+            .args([
+                if inside { "" } else { "/select," },
+                format!("{}", result).as_str(),
+            ])
             .spawn()
             .unwrap();
     }
@@ -76,7 +79,10 @@ fn open_folder(path: String) {
 
     #[cfg(target_os = "macos")]
     {
-        Command::new("open").args(["-R", &path]).spawn().unwrap();
+        Command::new("open")
+            .args([if inside { "" } else { "-R" }, &path])
+            .spawn()
+            .unwrap();
     }
 }
 
