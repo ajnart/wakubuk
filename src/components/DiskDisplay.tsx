@@ -1,16 +1,4 @@
-import {
-  createStyles,
-  Text,
-  Card,
-  RingProgress,
-  Group,
-  rem,
-  Badge,
-  Code,
-  Title,
-  Stack,
-  Avatar,
-} from '@mantine/core';
+import { createStyles, Text, Card, RingProgress, Group, rem, Badge, Code, Title, Stack, Avatar } from '@mantine/core';
 import { IconDatabase, IconServer } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Disk } from '../types';
@@ -60,13 +48,13 @@ const useStyles = createStyles((theme) => ({
 export function DiskDiplay({ disk }: { disk: Disk }) {
   const navigate = useNavigate();
 
-  function NavigateToDisk(disk: Disk) {
+  function NavigateToDisk(disk: Disk, isFullscan = false) {
     navigate('/analyze', {
       state: {
         name: disk.name,
         path: disk.mountPoint,
         used: disk.totalSpace - disk.availableSpace,
-        isFullscan: false,
+        isFullscan: isFullscan,
         isDirectory: false,
       },
     });
@@ -83,7 +71,8 @@ export function DiskDiplay({ disk }: { disk: Disk }) {
       p="xl"
       radius="md"
       className={classes.card}
-      onClick={() => NavigateToDisk(disk)}
+      onClick={() => NavigateToDisk(disk, false)}
+      onContextMenu={() => NavigateToDisk(disk, true)}
     >
       <div className={classes.inner}>
         <Stack spacing={'lg'}>
