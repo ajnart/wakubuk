@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Card, Code, Group, Progress, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Button, Card, Code, Group, Progress, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event';
@@ -8,6 +8,7 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconExternalLink } from '@tabler/icons-react';
 import { FileTreeDisplay } from '../components/FileTreeDisplay';
 import { DiskRouteParams } from '../types';
+import { formatBytes, parseDataStructure } from '../tools/parsing';
 
 export default function DiskPage() {
   const { name, path, used, isFullscan, isDirectory } = useLocation().state as DiskRouteParams;
@@ -63,18 +64,21 @@ export default function DiskPage() {
       </Stack>
     );
   }
-
+  const data = parseDataStructure(status);
   return (
     <Stack>
       <Group>
         <Code>{path}</Code>
+        <Badge size="md" variant="filled">
+          {formatBytes(data.tree.data)}
+        </Badge>
         <Tooltip label="Open folder in file manager" position="right">
           <ActionIcon onClick={() => invoke('open_folder', { path, inside: true })}>
             <IconExternalLink />
           </ActionIcon>
         </Tooltip>
       </Group>
-      <FileTreeDisplay status={status} name={name} />
+      <FileTreeDisplay data={data} name={name} />
     </Stack>
   );
 }
