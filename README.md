@@ -2,7 +2,8 @@
 ## Installation
 To install the app, simply download the latest version from the releases tab and install / run it.
 
-# Tauri + React + Typescript
+## Stack
+#### Tauri + React + Typescript
 
 This template should help get you started developing with Tauri, React and Typescript in Vite.
 
