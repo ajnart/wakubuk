@@ -64,13 +64,11 @@ export default function IndexPage() {
   }
   return (
     <>
-      <Title mt="sm" className={classes.title}>
-        Welcome to{' '}
-        <Text component="span" inherit className={classes.highlight}>
-          Wakubuk
-        </Text>{' '}
-        !
-      </Title>
+      <Center>
+        <Title align="center" className={classes.title}>
+          Welcome to Wakubuk
+        </Title>
+      </Center>
       <Stack mx="xl">
         <Text size="lg" className={classes.description}>
           To get started, please select a drive to scan from the list below or a folder. You can also drag and drop a

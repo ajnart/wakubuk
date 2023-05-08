@@ -5,7 +5,7 @@ export function parseDataStructure(jsonString: string): DataStructure {
 }
 
 export function formatBytes(bytes: number): string {
-  const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
   let magnitude = 0;
 
   while (bytes >= 1024 && magnitude < units.length - 1) {

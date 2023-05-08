@@ -9,33 +9,10 @@ import { IconCheck } from '@tabler/icons-react';
 import { FileTreeDisplay } from '../components/FileTreeDisplay';
 import { DiskRouteParams } from '../types';
 
-const useStyles = createStyles((theme) => ({
-  card: {
-    backgroundColor: theme.fn.primaryColor(),
-  },
-
-  title: {
-    color: theme.fn.rgba(theme.white, 0.65),
-  },
-
-  stats: {
-    color: theme.white,
-  },
-
-  progressBar: {
-    backgroundColor: theme.white,
-  },
-
-  progressTrack: {
-    backgroundColor: theme.fn.rgba(theme.white, 0.4),
-  },
-}));
-
 export default function DiskPage() {
   const { name, path, used, isFullscan, isDirectory } = useLocation().state as DiskRouteParams;
   useHotkeys([['mod+O', () => invoke('open_folder', { path })]]);
   const [status, setStatus]: any = useState();
-  const { classes } = useStyles();
   const cappedTotal = Math.min(status ? status.total : 0, used);
   const percentage = (cappedTotal / used) * 100 || 0;
   const [isLoading, setIsLoading] = useState(true);
@@ -71,24 +48,17 @@ export default function DiskPage() {
     return (
       <Stack style={{ height: '90vh' }}>
         <Title>Disk: {name}</Title>
-        <Card withBorder radius="md" p="xl" className={classes.card}>
-          <Text fz="xs" tt="uppercase" fw={700} className={classes.title}>
-            Analyzing {name}
-          </Text>
-          <Text fz="lg" fw={500} className={classes.stats}>
-            {percentage} / 100
-          </Text>
-          <Progress
-            value={54.31}
-            mt="md"
-            size="lg"
-            radius="xl"
-            classNames={{
-              root: classes.progressTrack,
-              bar: classes.progressBar,
-            }}
-          />
-          <Button onClick={() => navigate('/')}>Stop scanning</Button>
+        <Card withBorder radius="md" m="xl" p="xl">
+          <Stack>
+            <Text fz="xs" tt="uppercase" fw={700}>
+              Analyzing {name}
+            </Text>
+            <Text fz="lg" fw={500}>
+              {percentage.toFixed(2)}% of {name} scanned
+            </Text>
+            <Progress value={percentage} striped mt="md" animate size="xl" radius="md" />
+            <Button onClick={() => navigate('/')}>Stop scanning</Button>
+          </Stack>
         </Card>
       </Stack>
     );
@@ -98,5 +68,5 @@ export default function DiskPage() {
     <Stack>
       <FileTreeDisplay status={status} name={name} />
     </Stack>
-  )
+  );
 }
